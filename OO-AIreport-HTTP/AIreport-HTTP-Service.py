@@ -5,9 +5,16 @@ app = FastAPI()
 class Item(BaseModel):
     a: int = None
     b: int = None
+    x: frozenset = None
+    mean_list: frozenset = None
+    std_list:frozenset = None
+    age:int = None
+
+
+
     @app.get('/test/a={a}/b={b}')
-    def calculate(a: int=None, b: int=None):
-        c = a + b
+    def calculate(x: frozenset = None, mean_list: frozenset = None,std_list:frozenset = None,age:int = None):
+        c = age
         res = {"res":c}
         return res
         @app.post('/test')
