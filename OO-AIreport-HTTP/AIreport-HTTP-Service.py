@@ -8,6 +8,7 @@ app = FastAPI()
 class list_(BaseModel):
     list_ :List[float] = None
 
+
 class Item(BaseModel):
     age: int = 6
     gender: int = 1
