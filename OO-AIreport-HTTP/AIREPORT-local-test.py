@@ -7,13 +7,14 @@ Created on Thu Aug 20 15:52:13 2020
 
 
 import numpy as np  # numpy库
-
+#import sklearn
 import xlrd
-import xlwt
-import os
+#import xlwt
+#import os
 #from sklearn import preprocessing
-from sklearn.svm import SVR
+#from sklearn.svm import SVR
 import joblib
+#from sklearn.externals import joblib
 #from sklearn.model_selection import GridSearchCV
 import math
 #import matplotlib.pyplot as plt
@@ -99,11 +100,11 @@ def read_excel(deltaT=1, fold='train'):
 
 
 def vision_predict_for5years(x, mean_list, std_list, age):
-    svr_delta1year = joblib.load('.\svr_vision_delta_1year_addRA-yanzhou.pkl')
-    svr_delta2year = joblib.load('.\svr_vision_delta_2year_addRA-yanzhou.pkl')
-    svr_delta3year = joblib.load('.\svr_vision_delta_3year_addRA-yanzhou.pkl')
-    svr_delta4year = joblib.load('.\svr_vision_delta_4year_addRA-yanzhou.pkl')
-    svr_delta5year = joblib.load('.\svr_vision_delta_5year_addRA-yanzhou.pkl')
+    svr_delta1year = joblib.load(r'.\2021-03-22-RF_vision_delta_1year_Standard.pkl')
+    svr_delta2year = joblib.load(r'.\2021-03-22-RF_vision_delta_2year_Standard.pkl')
+    svr_delta3year = joblib.load(r'.\2021-03-22-RF_vision_delta_3year_Standard.pkl')
+    svr_delta4year = joblib.load(r'.\2021-03-22-RF_vision_delta_4year_Standard.pkl')
+    svr_delta5year = joblib.load(r'.\2021-03-22-RF_vision_delta_5year_Standard.pkl')
     model_list = [svr_delta1year, svr_delta2year, svr_delta3year, svr_delta4year, svr_delta5year]
     y = []
     y.append(x[0][-3])
@@ -154,11 +155,11 @@ def vision_predict_for5years(x, mean_list, std_list, age):
 
 
 def RA_predict_for5years(x, mean_list, std_list, age):
-    svr_delta1year = joblib.load('.\svr_RA_delta_1year.pkl')
-    svr_delta2year = joblib.load('.\svr_RA_delta_2year.pkl')
-    svr_delta3year = joblib.load('.\svr_RA_delta_3year.pkl')
-    svr_delta4year = joblib.load('.\svr_RA_delta_4year.pkl')
-    svr_delta5year = joblib.load('.\svr_RA_delta_5year.pkl')
+    svr_delta1year = joblib.load(r'.\2021-03-22-RF_RA_delta_1year_Standard.pkl')
+    svr_delta2year = joblib.load(r'.\2021-03-22-RF_RA_delta_2year_Standard.pkl')
+    svr_delta3year = joblib.load(r'.\2021-03-22-RF_RA_delta_3year_Standard.pkl')
+    svr_delta4year = joblib.load(r'.\2021-03-22-RF_RA_delta_4year_Standard.pkl')
+    svr_delta5year = joblib.load(r'.\2021-03-22-RF_RA_delta_5year_Standard.pkl')
     model_list = [svr_delta1year, svr_delta2year, svr_delta3year, svr_delta4year, svr_delta5year]
     y = []
     y.append(x[0][-2])
@@ -210,11 +211,11 @@ def RA_predict_for5years(x, mean_list, std_list, age):
 
 
 def AXL_predict_for5years(x, mean_list, std_list, age):
-    svr_delta1year = joblib.load('.\svr_yanzhou_delta_1year.pkl')
-    svr_delta2year = joblib.load('.\svr_yanzhou_delta_2year.pkl')
-    svr_delta3year = joblib.load('.\svr_yanzhou_delta_3year.pkl')
-    svr_delta4year = joblib.load('.\svr_yanzhou_delta_4year.pkl')
-    svr_delta5year = joblib.load('.\svr_yanzhou_delta_5year.pkl')
+    svr_delta1year = joblib.load(r'.\2021-03-22-RF_AXL_delta_1year_Standard.pkl')
+    svr_delta2year = joblib.load(r'.\2021-03-22-RF_AXL_delta_2year_Standard.pkl')
+    svr_delta3year = joblib.load(r'.\2021-03-22-RF_AXL_delta_3year_Standard.pkl')
+    svr_delta4year = joblib.load(r'.\2021-03-22-RF_AXL_delta_4year_Standard.pkl')
+    svr_delta5year = joblib.load(r'.\2021-03-22-RF_AXL_delta_5year_Standard.pkl')
     model_list = [svr_delta1year, svr_delta2year, svr_delta3year, svr_delta4year, svr_delta5year]
     y = []
     y.append(x[0][-1])
@@ -264,7 +265,7 @@ def AXL_predict_for5years(x, mean_list, std_list, age):
     return y, y_referrence, predict_level
 
 
-def evaluate(x, age):
+def evaluate(x,a,b,age):
     mean_list = ['mean',
                  2.5,
                  9.65527629852295,
@@ -312,8 +313,8 @@ def evaluate(x, age):
                 1.7078251838684082,
                 1.7078251838684082]
     res = {}
-    vision_predict, vision_referrence, vision_level, vision_predict_level = vision_predict_for5years(x, mean_list,\
-                                                                                                     std_list, age)
+
+    vision_predict, vision_referrence, vision_level, vision_predict_level = vision_predict_for5years(x, mean_list, std_list, age)
     vision_list = [0.1, 0.08, 0.06, 0.04, 0.03]  ###make sure larger than this value
     # print(max(vision_predict[0] - 1*0.01, vision_list[0]))
     if vision_predict[0] > 0.5:
@@ -347,6 +348,7 @@ def evaluate(x, age):
         'vision_level': vision_level,
         'vision_predict_level': vision_predict_level,
     }
+
     RA_predict, RA_referrence, RA_level, RA_predict_level = RA_predict_for5years(x, mean_list, std_list, age)
     RA_list = [-6.00, -6.50, -6.75, -7.25, -8.125]  ###make sure larger than this value
     for ii in range(1, len(RA_predict)):
@@ -463,17 +465,18 @@ def evaluate(x, age):
         vision_level = 4
         current_score = 90
         predict_score = 95
-
-    return current_score, predict_score
+    res['current_score'] = current_score
+    res['predict_score'] = predict_score
+    return res
 
 
 a, b = read_excel()
-print(a)
-print(b)
-#current_score, predict_score = evaluate(x7, a, b, x7[0][1])
+#print(a)
+#print(b)
+res = evaluate(x7, a, b, x7[0][1])
 
-#print('current score is: ', current_score)
-#print('predict score is: ', predict_score)
+print(res)
+
 # x_ = np.zeros((5, 11))
 # print('x_ is :', x_)
 # print(x_[0][5])
@@ -492,16 +495,16 @@ input_info = {'deltaT':1,
            'AXL':1,
            }
 input_info_list = list(input_info.values())
-print(input_info_list)
-x = [[]]
+#print(input_info_list)
+x = [[],[],[],[],[]]
 for ii in range(5):
     for jj in range(len(input_info_list)):
         print(jj)
         if jj ==0:
-            x[ii][jj].append(input_info_list[jj]*(ii+1))
+            x[ii].append(input_info_list[jj]*(ii+1))
         else:
-            x[ii][jj].append(input_info_list[jj])
-print(x)
+            x[ii].append(input_info_list[jj])
+#print(x)
 '''
 xneed = np.linspace(0, 100, 100)[:, None]
 y_pre = svr.predict(xneed)# 对结果进行可视化：
