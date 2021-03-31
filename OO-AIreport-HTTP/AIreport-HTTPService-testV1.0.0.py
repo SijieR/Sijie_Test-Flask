@@ -13,10 +13,6 @@ import hashlib
 
 app = FastAPI()
 
-class list_(BaseModel):
-    list_ :List[float] = None
-
-
 class Item(BaseModel):
     age: int = 6
     gender: int = 1
@@ -30,116 +26,6 @@ class Item(BaseModel):
     vision: float = 1.20
     RA: float = 1.00
     AXL: float = 23.23
-
-
-
-@app.get('/test11/age={age}/gender={gender}/height={height}/weight={weight}/DAI={DAI}/FH={FH}/FW={FW}/MH={MH}/MW={MW}/vision={vision}/RA={RA}/AXL={AXL}')
-def calculate(age:int=1,
-              gender:int=1,
-              height: int = 112,
-                weight: int = 30,
-                DAI: int = 1,
-                FH: int = 170,
-                FW: int = 60,
-                MH: int = 160,
-                MW: int = 50,
-                vision: float = 1.20,
-                RA: float = 1.00,
-                AXL: float = 23.23):
-    #exit = exit
-    #c = age
-    deltaT_1 = 1
-    input_info = {'deltaT':deltaT_1,
-            "age":age,
-           'gender':gender,
-           'height':height,
-           'weight':weight,
-           'DAI':DAI,
-           'FH':FH,
-           'FW':FW,
-           'MH':MH,
-           'MW':MW,
-           'vision':vision,
-           'RA':RA,
-           'AXL':AXL
-           }
-    input_info_list = list(input_info.values())
-    '''
-    模型输入数据x结构改变
-    '''
-    x = [[],[],[],[],[]]
-    for ii in range(5):
-        for jj in range(len(input_info_list)):
-            if jj ==0:
-                x[ii].append(input_info_list[jj]*(ii+1))
-            else:
-                x[ii].append(input_info_list[jj])
-
-    """归一化数据"""
-    MEAN_MAP = {
-        'tag': 'mean',
-        'deltaT': 2.5,
-        'age1': 9.65527629852295,
-        'GENDER': 1.4143646955490112,
-        'HEIGHT_1': 137.7775421142578,
-        'WEIGHT_1': 35.11663818359375,
-        'DAI': 0.40032464265823364,
-        'FH': 172.61509704589844,
-        'FW': 74.3406982421875,
-        'MH': 160.7814178466797,
-        'MW': 59.31727600097656,
-        'R_LUO': 0.7537265419960022,
-        'RA_1': -0.05085483565926552,
-        'AL_1': 23.37474822998047,
-        'L_LUO': 0.7537265419960022,
-        'RA_2': -0.05085483565926552,
-        'AL_2': 23.37474822998047,
-        'AD_1': 3.026252031326294,
-        'CCT_1': 545.697265625,
-        'K1_1': 42.814842224121094,
-        'K2_1': 43.846710205078125,
-        'White_to_White_1': 12.04364013671875,
-        'grade': 2.5,
-        'deltaT2': 3.5,
-    }
-    mean_list = list(MEAN_MAP.values())
-
-    STD_MAP = {
-        'tag': 'std',
-        'deltaT': 1.7078251838684082,
-        'age1': 1.7567731142044067,
-        'GENDER': 0.49261200428009033,
-        'HEIGHT_1': 11.735713005065918,
-        'WEIGHT_1': 11.313467025756836,
-        'DAI': 0.6161134243011475,
-        'FH': 4.556289196014404,
-        'FW': 13.932219505310059,
-        'MH': 4.130949020385742,
-        'MW': 11.593335151672363,
-        'R_LUO': 0.29731976985931396,
-        'RA_1': 1.621026635169983,
-        'AL_1': 0.9859156608581543,
-        'L_LUO': 0.29731976985931396,
-        'RA_2': 1.621026635169983,
-        'AL_2': 0.9859156608581543,
-        'AD_1': 0.26024743914604187,
-        'CCT_1': 29.92780113220215,
-        'K1_1': 1.4588570594787598,
-        'K2_1': 1.4786999225616455,
-        'White_to_White_1': 0.4059635102748871,
-        'grade': 1.7078251838684082,
-        'deltaT2': 1.7078251838684082,
-    }
-    std_list = list(STD_MAP.values())
-
-    input_info_sumdict = {
-        'x':x,
-        'mean_list':mean_list,
-        'std_list':std_list,
-        'age':age,
-    }
-
-    return input_info_list
 
 def vision_predict_for5years(x, mean_list, std_list, age):
     svr_delta1year = joblib.load(r'.\2021-03-22-RF_vision_delta_1year_Standard.pkl')
@@ -164,10 +50,6 @@ def vision_predict_for5years(x, mean_list, std_list, age):
         y.append(predict_value)
 
     '''
-    视力以对比1.2健康视力为准，以一年后下降0.2/0.4为预警信号阈值
-    屈光度七岁：+0.5~+1.0， 八岁：0~+0.5D。
-    屈光度以每年下降0.1~0.15为正常值参考
-    眼轴以每年增加0.3~0.5mm为正常值参考
     '''
     vision_level = 1
     vision_score = 0
@@ -219,10 +101,6 @@ def RA_predict_for5years(x, mean_list, std_list, age):
         y.append(predict_value)
 
     '''
-    视力以对比1.2健康视力为准，以一年后下降0.2/0.4为预警信号阈值
-    屈光度七岁：+0.5~+1.0， 八岁：0~+0.5D。
-    屈光度以每年下降0.1~0.15为正常值参考
-    眼轴以每年增加0.3~0.5mm为正常值参考
     '''
     vision_level = 2
     predict_level = 0
@@ -275,10 +153,6 @@ def AXL_predict_for5years(x, mean_list, std_list, age):
         y.append(predict_value)
 
     '''
-    视力以对比1.2健康视力为准，以一年后下降0.2/0.4为预警信号阈值
-    屈光度七岁：+0.5~+1.0， 八岁：0~+0.5D。
-    屈光度以每年下降0.1~0.15为正常值参考
-    眼轴以每年增加0.3~0.5mm为正常值参考
     '''
     vision_level = 2
     predict_level = 0
@@ -307,8 +181,8 @@ def AXL_predict_for5years(x, mean_list, std_list, age):
     return y, y_referrence, predict_level
 
 
-
-@app.get('/AIreport-test/age={age}/gender={gender}/height={height}/weight={weight}/DAI={DAI}/FH={FH}/FW={FW}/MH={MH}/MW={MW}/vision={vision}/RA={RA}/AXL={AXL}/timestamp={timestamp}/token={token}')
+'/timestamp={timestamp}/token={token}'
+@app.get('/AIreport-test/age={age}/gender={gender}/height={height}/weight={weight}/DAI={DAI}/FH={FH}/FW={FW}/MH={MH}/MW={MW}/vision={vision}/RA={RA}/AXL={AXL}')
 def evaluate(age:int=1,
               gender:int=1,
               height: int = 112,
@@ -321,17 +195,24 @@ def evaluate(age:int=1,
                 vision: float = 1.20,
                 RA: float = 1.00,
                 AXL: float = 23.23,
-                timestamp: str = '',
-                token: str = ''):
+                timestamp: Optional[str] = '',
+                token: Optional[str] = ''):
     #exit = exit
     #c = age
+    result = {
+        "code": 0,
+        "msg": "empty",
+        "data": {}
+    }
     try:
         md5_key = 'MrPupq2FkL@B$l6*7L8g24F&yZOwZKT^M7GoRS&ydKq0HiwbiY2L%MRh@05IfD'
-        token_local = hashlib.md5(timestamp + md5_key)
+        token_local = hashlib.md5((timestamp + md5_key).encode(encoding='utf-8')).hexdigest()
         if timestamp == '':
-            return 'Error: timestamp is needed!'
+            result['code'] = 66
+            return result
         elif not token_local == token:
-            return  '403'
+            result['code'] = 88
+            return result
         else:
             input_info = {'deltaT':1,
                     "age":age,
@@ -581,14 +462,18 @@ def evaluate(age:int=1,
                 predict_score = 95
             res['current_score'] = current_score
             res['predict_score'] = predict_score
-            return res
+
+            result['code'] = 100
+            result['msg'] = 'success'
+            result["data"] = res
+            return result
     except:
-        return '403'
+        return result
 
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run(app=app,  host="localhost",   port=8001,       workers=1)
+    uvicorn.run(app=app,  host="localhost",   port=8002,       workers=1)
 
 
 

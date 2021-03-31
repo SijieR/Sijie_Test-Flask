@@ -478,6 +478,9 @@ def evaluate(x: List = None,
     res['predict_score'] = predict_score
     res['vision']['vision_level'] = vision_level
 
+
+
+
     return res
 
 
